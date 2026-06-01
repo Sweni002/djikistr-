@@ -1,0 +1,114 @@
+
+.main-container {
+    display: flex;
+    width:65%;
+   justify-content: space-between;
+
+   
+}
+
+
+.graphe1{
+    display: flex;
+    width: 1200px;
+    height: auto;
+    user-select: none;
+}
+.option-container {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+   text-align: left; /* optional, for text */
+    font-size: 16px;
+     align-items: flex-start; /* change from center */
+     border-top: none; /* pas de bordure en haut */
+
+       border-right: 1px solid rgba(78, 77, 77, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+      
+   border-radius: 2px; /* coins arrondis optionnels */
+    padding: 10px; /* espace intérieur pour ne pas coller la bordure */
+
+}
+
+
+
+.start-container select , .end-container select{
+    padding: 10px 30px;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-top : 20px;
+}
+
+.visual-button {
+    border:0;
+    padding: 15px 40px;
+    border-radius: 10px;
+    border:0;
+    font-size: 18px;   
+    margin-top: 30px;
+}
+
+.result-text{
+    margin-top: 40px;
+    font-size: 22px;
+    color: red;
+}
+
+.distance-text {
+    font-size: 18px;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 92vh;
+
+}
+
+#graph-container {
+    margin-left:50px;
+    height: 100% ;
+    width: 100%;
+}
+
+
+
+
+@media only screen and (max-width: 726px) {
+    .main-container {
+            width:100%;
+            justify-content: flex-start;
+             align-items: center;
+        flex-direction: column;
+    }
+   .graphe1{
+    width: 100%;
+    height: 200px;
+   }
+
+   .option-container{
+    width: 100%;
+   }
+
+
+.forms {
+
+justify-content: flex-start;
+padding-left: 4px !important; 
+padding-right: 4px !important; 
+   }
+}
+
+
+.forms {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* align items from top */
+    align-items: center;     /* align items to start horizontally */
+padding-left: 40px;
+padding-right: 40px;
+    max-width:700px;
+   }
