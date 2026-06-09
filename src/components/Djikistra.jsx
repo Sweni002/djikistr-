@@ -23,7 +23,7 @@ import {
   IconButton,
   InputAdornment,
   TableContainer,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -47,7 +47,9 @@ function TabPanel({ children, value, index, ...other }) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3, width: "100%" }}> {/* ✅ AJOUT */}
+        <Box sx={{ p: 3, width: "100%" }}>
+          {" "}
+          {/* ✅ AJOUT */}
           {children}
         </Box>
       )}
@@ -65,38 +67,61 @@ const GraphComponent = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [graphAdjacency, setGraphAdjacency] = useState({
-    A: { B: 2, C: 5, D: 4 },
-    B: { A: 2, D: 3, C: 1, E: 5 },
-    C: { A: 5, B: 1, D: 3, E: 4, F: 4 },
-    D: { A: 4, B: 3, C: 3, E: 3, F: 5 },
-    E: { B: 5, C: 4, D: 3, F: 6, G: 2 },
-    F: { C: 4, D: 5, E: 6, G: 1 },
-    G: { E: 2, F: 1 },
+    A: { B: 3, D: 9, C: 3 },
+    B: { A: 3, E: 9, F: 1, D: 7 },
+    C: { A: 3, D: 2, G: 2 },
+    D: { D: 9, B: 7, C: 2, G: 1, F: 3, H: 3, E: 2 },
+    E: { B: 9, D: 2, H: 5 },
+    F: { B: 1, D: 3, H: 4, G: 5, I: 2, J: 5 },
+    G: { C: 2, D: 1, H: 5, J: 3, K: 8, F: 5 },
+    H: { D: 3, E: 5, F: 4, I: 6 },
+    I: { F: 2, H: 6, J: 2, L: 8 },
+    K: { G: 8, J: 4, L: 5 },
+    J: { F: 5, I: 2, G: 3, K: 4, L: 4 },
+    L: { I: 8, K: 5, J: 4 },
   });
   // Dans GraphComponent.js
-  const ALL_NODES = ["A", "B", "C", "D", "E", "F", "G"];
+  const ALL_NODES = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+  ];
   const totalSteps = ALL_NODES.length; // Sera 7 au lieu de 3
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
   };
   const [dijkstraTable, setDijkstraTable] = useState([]);
   useEffect(() => {
-      const savedGraph = localStorage.getItem(STORAGE_KEY);
-      let initialGraph = graphAdjacency;
-
-      if (savedGraph) {
-        initialGraph = JSON.parse(savedGraph);
-        setGraphAdjacency(initialGraph);
-      }
+    const savedGraph = localStorage.getItem(STORAGE_KEY);
+    let initialGraph = graphAdjacency;
+ console.log(savedGraph)
+    if (savedGraph) {
+      initialGraph = JSON.parse(savedGraph);
+      setGraphAdjacency(initialGraph);
+    }
     // ... (Vos définitions de nodesRef et edgesRef restent identiques)
     nodesRef.current = new DataSet([
       { id: "A", label: "A", x: -400, y: 0 },
-      { id: "B", label: "B", x: -150, y: -180 },
-      { id: "C", label: "C", x: 100, y: 0 },
-      { id: "D", label: "D", x: -150, y: 180 },
-      { id: "E", label: "E", x: 350, y: -180 },
-      { id: "F", label: "F", x: 350, y: 180 },
-      { id: "G", label: "G", x: 600, y: 0 },
+      { id: "B", label: "B", x: -150, y: -400 },
+      { id: "D", label: "D", x: 100, y: 0 },
+      { id: "C", label: "C", x: -150, y: 180 },
+      { id: "E", label: "E", x: 350, y: -400 },
+      { id: "F", label: "F", x: 350, y: 0 },
+      { id: "G", label: "G", x: 120, y: 240 },
+      { id: "H", label: "H", x: 600, y: -360 },
+      { id: "I", label: "I", x: 850, y: -280 },
+      { id: "J", label: "J", x: 820, y: 0 },
+      { id: "K", label: "K", x: 500, y: 240 },
+      { id: "L", label: "L", x: 1120, y: 0 },
     ]);
 
     edgesRef.current = new DataSet([
@@ -104,19 +129,24 @@ const GraphComponent = () => {
         id: 1,
         from: "A",
         to: "B",
-      label: initialGraph.A.B.toString(),
+        label: initialGraph.A.B.toString(),
         smooth: { type: "curvedCW", roundness: 0.2 },
       },
-      { id: 2, from: "A", to: "C", label: initialGraph.A.C.toString(), font: { vadjust: -15 } },
+      {
+        id: 2,
+        from: "A",
+        to: "C",
+        label: initialGraph.A.C.toString(),
+        font: { vadjust: -15 },
+      },
       {
         id: 3,
         from: "A",
         to: "D",
         label: initialGraph.A.D.toString(),
-        smooth: { type: "curvedCCW", roundness: 0.2 },
+        font: { vadjust: -15 },
       },
       { id: 4, from: "B", to: "D", label: initialGraph.B.D.toString() },
-      { id: 5, from: "B", to: "C", label: initialGraph.B.C.toString() },
       {
         id: 6,
         from: "B",
@@ -131,20 +161,12 @@ const GraphComponent = () => {
         label: initialGraph.C.D.toString(),
         smooth: { type: "curvedCW", roundness: 0.25 },
       },
-      {
-        id: 8,
-        from: "C",
-        to: "E",
-        label: initialGraph.C.E.toString(),
-        smooth: { type: "curvedCW", roundness: 0.35 },
-      },
-      { id: 9, from: "C", to: "F", label: initialGraph.C.F.toString() }, // <-- Mettez "4" ici au lieu de "5"
+
       {
         id: 10,
         from: "D",
         to: "E",
         label: initialGraph.D.E.toString(),
-        smooth: { type: "curvedCCW", roundness: 0.6 },
         font: { vadjust: 25 },
       },
       {
@@ -154,20 +176,134 @@ const GraphComponent = () => {
         label: initialGraph.D.F.toString(),
         smooth: { type: "curvedCCW", roundness: 0.15 },
       },
-      { id: 12, from: "E", to: "F", label: initialGraph.E.F.toString() },
-      {
-        id: 13,
-        from: "E",
-        to: "G",
-        label: initialGraph.E.G.toString(),
-        smooth: { type: "curvedCW", roundness: 0.25 },
-      },
+
       {
         id: 14,
         from: "F",
         to: "G",
         label: initialGraph.F.G.toString(),
         smooth: { type: "curvedCCW", roundness: 0.25 },
+      },
+
+      {
+        id: 15,
+        from: "C",
+        to: "G",
+        label: initialGraph.C.G.toString(),
+        font: { vadjust: -15 },
+      },
+
+      {
+        id: 16,
+        from: "G",
+        to: "K",
+        label: initialGraph.G.K.toString(),
+        font: { vadjust: -15 },
+      },
+
+      {
+        id: 17,
+        from: "K",
+        to: "J",
+        label: initialGraph.K.J.toString(),
+        font: { vadjust: -15 },
+      },
+
+      {
+        id: 18,
+        from: "K",
+        to: "L",
+        label: initialGraph.K.L.toString(),
+        font: { vadjust: -5 },
+      },
+
+      {
+        id: 20,
+        from: "J",
+        to: "L",
+        label: initialGraph.J.L.toString(),
+        font: { vadjust: -5 },
+      },
+
+      {
+        id: 21,
+        from: "D",
+        to: "H",
+        label: initialGraph.D.H.toString(),
+        font: { vadjust: 25 },
+        smooth: { type: "curvedCCW", roundness: 0.25 },
+      },
+
+      {
+        id: 22,
+        from: "D",
+        to: "G",
+        label: initialGraph.D.G.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.25 },
+      },
+      {
+        id: 23,
+        from: "G",
+        to: "J",
+        label: initialGraph.G.J.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.05 },
+      },
+      {
+        id: 24,
+        from: "F",
+        to: "J",
+        label: initialGraph.F.J.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.05 },
+      },
+      {
+        id: 25,
+        from: "F",
+        to: "I",
+        label: initialGraph.F.I.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.25 },
+      },
+      {
+        id: 26,
+        from: "E",
+        to: "H",
+        label: initialGraph.E.H.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.02 },
+      },
+      {
+        id: 27,
+        from: "H",
+        to: "I",
+        label: initialGraph.H.I.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.05 },
+      },
+
+      {
+        id: 28,
+        from: "I",
+        to: "L",
+        label: initialGraph.I.L.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.1 },
+      },
+      {
+        id: 29,
+        from: "F",
+        to: "H",
+        label: initialGraph.F.H.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.25 },
+      },
+      {
+        id: 30,
+        from: "B",
+        to: "F",
+        label: initialGraph.B.F.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.04 },
+      },
+      {
+        id: 31,
+        from: "I",
+        to: "J",
+        label: initialGraph.I.J.toString(),
+        smooth: { type: "curvedCCW", roundness: 0.04 },
       },
     ]);
 
@@ -218,48 +354,46 @@ const GraphComponent = () => {
     return () => network.destroy();
   }, []);
 
+  const handleSave = () => {
+    if (currentEdge !== null && edgeValue !== "") {
+      const edge = edgesRef.current.get(currentEdge);
+      const newWeight = Number(edgeValue);
 
-const handleSave = () => {
-  if (currentEdge !== null && edgeValue !== "") {
-    const edge = edgesRef.current.get(currentEdge);
-    const newWeight = Number(edgeValue);
+      if (isNaN(newWeight) || newWeight < 0) return;
 
-    if (isNaN(newWeight) || newWeight < 0) return;
+      // 1. Update visuel
+      edgesRef.current.update({
+        id: currentEdge,
+        label: newWeight.toString(),
+      });
 
-    // 1. Update visuel
-    edgesRef.current.update({
-      id: currentEdge,
-      label: newWeight.toString(),
-    });
+      // 2. Update logique
+      const updatedGraph = {
+        ...graphAdjacency,
+        [edge.from]: {
+          ...graphAdjacency[edge.from],
+          [edge.to]: newWeight,
+        },
+        [edge.to]: {
+          ...graphAdjacency[edge.to],
+          [edge.from]: newWeight,
+        },
+      };
 
-    // 2. Update logique
-    const updatedGraph = {
-      ...graphAdjacency,
-      [edge.from]: {
-        ...graphAdjacency[edge.from],
-        [edge.to]: newWeight,
-      },
-      [edge.to]: {
-        ...graphAdjacency[edge.to],
-        [edge.from]: newWeight,
-      },
-    };
+      setGraphAdjacency(updatedGraph);
 
-    setGraphAdjacency(updatedGraph);
-
-    // ✅ 3. Sauvegarde dans localStorage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedGraph));
-
-    // 4. Reset
-    resetGraph();
-    setOpenModal(false);
-  }
-};
+      // ✅ 3. Sauvegarde dans localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedGraph));
+    console.log(updatedGraph);
+      // 4. Reset
+      resetGraph();
+      setOpenModal(false);
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSave();
   };
- 
 
   useEffect(() => {
     const initialRow = ALL_NODES.map((node) => ({
@@ -271,7 +405,7 @@ const handleSave = () => {
     setDijkstraTable([initialRow]);
     setCurrentStep(0);
   }, [startNode]);
-  const [endNode, setEndNode] = useState("G"); // Le sommet d'arrivée
+  const [endNode, setEndNode] = useState("L"); // Le sommet d'arrivée
   const [isFinished, setIsFinished] = useState(false);
 
   const highlightFinalPath = () => {
@@ -290,7 +424,6 @@ const handleSave = () => {
       unvisited.delete(curr);
       if (curr === endNode) break;
 
-     
       const neighbors = graphAdjacency[curr] || {}; // Changé ici
       for (const neighbor in neighbors) {
         let alt = distances[curr] + neighbors[neighbor];
@@ -343,89 +476,89 @@ const handleSave = () => {
     setIsFinished(true);
   };
 
-const handleNextStep = () => {
-  if (dijkstraTable.length === 0) return;
+  const handleNextStep = () => {
+    if (dijkstraTable.length === 0) return;
 
-  const lastRow = dijkstraTable[dijkstraTable.length - 1];
+    const lastRow = dijkstraTable[dijkstraTable.length - 1];
 
-  // 1️⃣ Trouver le pivot : noeud non visité avec distance minimale
-  let minDistance = Infinity;
-  let pivotNode = null;
+    // 1️⃣ Trouver le pivot : noeud non visité avec distance minimale
+    let minDistance = Infinity;
+    let pivotNode = null;
 
-  for (const node of ALL_NODES) {
-    const cell = lastRow.find((c) => c.node === node);
-    if (!cell.isVisited && cell.distance < minDistance) {
-      minDistance = cell.distance;
-      pivotNode = node;
-    }
-  }
-
-  // Si tous les noeuds sont visités, terminer et montrer le chemin final
-  if (!pivotNode) {
-    setCurrentStep(totalSteps);
-    highlightFinalPath();
-    return;
-  }
-
-  // 2️⃣ Mettre à jour visuellement le pivot
-  nodesRef.current.update({
-    id: pivotNode,
-    color: { background: "#ffa500", border: "#cc8400" },
-    font: { color: "#ffffff" },
-  });
-
-  // 3️⃣ Créer la nouvelle ligne de Dijkstra
-  const nextRow = ALL_NODES.map((node) => {
-    const prevCell = lastRow.find((c) => c.node === node);
-
-    // Si déjà visité, garder les valeurs
-    if (prevCell.isVisited) return { ...prevCell };
-
-    // Marquer le pivot comme visité
-    if (node === pivotNode) return { ...prevCell, isVisited: true };
-
-    // Relaxation pour les voisins
-    const weightFromPivot = graphAdjacency[pivotNode][node]; // Changé ici   let newDistance = prevCell.distance;
-     let newDistance = prevCell.distance;
-
-    let newFrom = prevCell.from;
-
-    if (weightFromPivot !== undefined) {
-      const potentialDistance = minDistance + weightFromPivot;
-      // ✅ Mise à jour seulement si plus court
-      if (potentialDistance < prevCell.distance) {
-        newDistance = potentialDistance;
-        newFrom = pivotNode;
+    for (const node of ALL_NODES) {
+      const cell = lastRow.find((c) => c.node === node);
+      if (!cell.isVisited && cell.distance < minDistance) {
+        minDistance = cell.distance;
+        pivotNode = node;
       }
     }
 
-    return {
-      node,
-      distance: newDistance,
-      isVisited: false,
-      from: newFrom,
-    };
-  });
+    // Si tous les noeuds sont visités, terminer et montrer le chemin final
+    if (!pivotNode) {
+      setCurrentStep(totalSteps);
+      highlightFinalPath();
+      return;
+    }
 
-  // 4️⃣ Ajouter la ligne suivante au tableau Dijkstra et avancer l'étape
-  setDijkstraTable((prev) => [...prev, nextRow]);
-  setCurrentStep((prev) => prev + 1);
-};
+    // 2️⃣ Mettre à jour visuellement le pivot
+    nodesRef.current.update({
+      id: pivotNode,
+      color: { background: "#ffa500", border: "#cc8400" },
+      font: { color: "#ffffff" },
+    });
 
-// 🔹 Fonction pour reconstruire le chemin optimal vers une cible
-const getOptimalPath = (target) => {
-  const path = [];
-  let currentNode = target;
+    // 3️⃣ Créer la nouvelle ligne de Dijkstra
+    const nextRow = ALL_NODES.map((node) => {
+      const prevCell = lastRow.find((c) => c.node === node);
 
-  while (currentNode) {
-    path.unshift(currentNode);
-    const lastRow = dijkstraTable[dijkstraTable.length - 1];
-    const cell = lastRow.find((c) => c.node === currentNode);
-    currentNode = cell.from;
-  }
+      // Si déjà visité, garder les valeurs
+      if (prevCell.isVisited) return { ...prevCell };
 
-  return path;
-};
+      // Marquer le pivot comme visité
+      if (node === pivotNode) return { ...prevCell, isVisited: true };
+
+      // Relaxation pour les voisins
+      const weightFromPivot = graphAdjacency[pivotNode][node]; // Changé ici   let newDistance = prevCell.distance;
+      let newDistance = prevCell.distance;
+
+      let newFrom = prevCell.from;
+
+      if (weightFromPivot !== undefined) {
+        const potentialDistance = minDistance + weightFromPivot;
+        // ✅ Mise à jour seulement si plus court
+        if (potentialDistance < prevCell.distance) {
+          newDistance = potentialDistance;
+          newFrom = pivotNode;
+        }
+      }
+
+      return {
+        node,
+        distance: newDistance,
+        isVisited: false,
+        from: newFrom,
+      };
+    });
+
+    // 4️⃣ Ajouter la ligne suivante au tableau Dijkstra et avancer l'étape
+    setDijkstraTable((prev) => [...prev, nextRow]);
+    setCurrentStep((prev) => prev + 1);
+  };
+
+  // 🔹 Fonction pour reconstruire le chemin optimal vers une cible
+  const getOptimalPath = (target) => {
+    const path = [];
+    let currentNode = target;
+
+    while (currentNode) {
+      path.unshift(currentNode);
+      const lastRow = dijkstraTable[dijkstraTable.length - 1];
+      const cell = lastRow.find((c) => c.node === currentNode);
+      currentNode = cell.from;
+    }
+
+    return path;
+  };
 
   const handlePreviousStep = () => {
     if (currentStep === 0 || dijkstraTable.length <= 1) return;
@@ -475,18 +608,17 @@ const getOptimalPath = (target) => {
     setDijkstraTable((prev) => prev.slice(0, -1));
     setCurrentStep((prev) => prev - 1);
   };
-const initializeDijkstraTable = () => {
-  const initialRow = ALL_NODES.map((node) => ({
-    node,
-    distance: node === startNode ? 0 : Infinity,
-    isVisited: false,
-    from: null,
-  }));
+  const initializeDijkstraTable = () => {
+    const initialRow = ALL_NODES.map((node) => ({
+      node,
+      distance: node === startNode ? 0 : Infinity,
+      isVisited: false,
+      from: null,
+    }));
 
-  setDijkstraTable([initialRow]);
-  setCurrentStep(0);
-};
-
+    setDijkstraTable([initialRow]);
+    setCurrentStep(0);
+  };
 
   const resetGraph = () => {
     // Reset tableau Dijkstra
@@ -523,18 +655,16 @@ const initializeDijkstraTable = () => {
   };
 
   const solveAllSteps = () => {
-  // 1. Basculer l'onglet vers le tableau (index 1)
-  setTabIndex(1);
+    // 1. Basculer l'onglet vers le tableau (index 1)
+    setTabIndex(1);
 
-  // 2. Si l'algo est déjà fini, on réinitialise avant de relancer
-  if (isFinished) {
-    resetGraph();
-  }
+    // 2. Si l'algo est déjà fini, on réinitialise avant de relancer
+    if (isFinished) {
+      resetGraph();
+    }
 
-  
     handleNextStep();
-    
-};
+  };
   return (
     <div className="main-container">
       <div className="graphe1">
@@ -1094,6 +1224,6 @@ const initializeDijkstraTable = () => {
       </Tooltip>
     </div>
   );
-};;;
+};
 
 export default GraphComponent;
