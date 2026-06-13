@@ -60,6 +60,8 @@ const GraphComponent = () => {
   const containerRef = useRef(null);
   const nodesRef = useRef(null);
   const edgesRef = useRef(null);
+    const [minMaxResult, setMinMaxResult] = useState(null);
+
   const [startNode, setStartNode] = useState("A"); // par défaut A
   const [openModal, setOpenModal] = useState(false);
   const [currentEdge, setCurrentEdge] = useState(null);
